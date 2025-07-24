@@ -22,7 +22,16 @@ pip freeze > requirements.txt
 ```
 touch .gitignore
 ```
-5. ```git init```
+5. Сохранить в Github
+ ```
+ git init
+ git add -A
+ git commit -m"Created new project"
+ git branch -M main
+ git remote add origin git@github.com:AbayReushenov/python-trainings.git
+ git push -u origin main
+ ```
+
 
 
 
