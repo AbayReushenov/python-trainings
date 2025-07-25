@@ -1,6 +1,8 @@
 # main.py
 
-# --- Шаг 1: Определение функций ---
+# В самом верху файла добавьте импорт
+# Аналог: import requests from 'requests'; (хотя синтаксис проще)
+import requests
 
 def process_users(user_list):
     """
@@ -26,6 +28,34 @@ def process_users(user_list):
 
     return important_names
 
+def get_random_data():
+    """
+    Делает GET-запрос к публичному API и возвращает данные.
+    """
+    print("\nПолучение внешних данных...")
+    api_url = "https://jsonplaceholder.typicode.com/todos/1" # Простое JSON API для примера
+
+    # try...except: Блок для обработки ошибок. Это аналог try...catch в JS.
+    # Если что-то пойдет не так с запросом (нет сети, сервер вернул ошибку 500), выполнение перейдет в блок except.
+    try:
+        # Аналог: const response = await axios.get(api_url);
+        response = requests.get(api_url)
+
+        # Проверяем, что запрос прошел успешно (статус 2xx)
+        response.raise_for_status() # Если статус 4xx или 5xx, вызовет ошибку
+        # response.raise_for_status(): Удобный метод, который проверяет код ответа. Если код 200-299, он ничего не делает.
+        # Если это код ошибки (4xx, 5xx), он генерирует исключение, которое будет поймано нашим except.
+
+        # .json() парсит JSON-ответ в питоновский словарь (dict)
+        # Аналог: const data = response.data;
+        data = response.json()
+        print("✅ Данные с API успешно получены!")
+        return data
+
+    except requests.exceptions.RequestException as e:
+        # Обработка ошибок сети, таймаутов и т.д.
+        print(f"❌ Ошибка при запросе к API: {e}")
+        return None
 
 def main():
     """
@@ -45,6 +75,13 @@ def main():
     processed_names = process_users(users)
     print(f"\nСписок важных пользователей: {processed_names}")
 
+    # Вызываем нашу новую функцию
+    external_data = get_random_data()
+    if external_data:
+    # Работаем с полученными данными
+        title = external_data.get("title", "Заголовок не найден")
+        print(f"Полученный заголовок из API: '{title}'")
+
     print("\n--- Анализ завершен ---")
 
 
@@ -55,14 +92,35 @@ def main():
 if __name__ == "__main__":
     main()
 
+# (venv) aaaaa@aaaaa-GF63-Thin-9SCXR:~/AI-TUTORIALS/python-trainings$ python main.py
 # --- Запуск: Скрипт обработки пользователей v2.0 ---
 
 # Анализ пользователей:
 # ✅  Здравствуйте, Alice! Ваш статус: premium.
-#     Пользователь Bob имеет базовый доступ.
+#    Пользователь Bob имеет базовый доступ.
 # ✅  Здравствуйте, Charlie! Ваш статус: admin.
 # ✅  Здравствуйте, Diana! Ваш статус: premium.
 
 # Список важных пользователей: ['Alice', 'Charlie', 'Diana']
 
+# Получение внешних данных...
+# ❌ Ошибка при запросе к API: HTTPSConnectionPool(host='api.jsonserve.com', port=443): Max retries exceeded with url: /bRZJAw (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x7fb91fcb29f0>: Failed to resolve 'api.jsonserve.com' ([Errno -2] Name or service not known)"))
+
 # --- Анализ завершен ---
+# (venv) aaaaa@aaaaa-GF63-Thin-9SCXR:~/AI-TUTORIALS/python-trainings$ python main.py
+# --- Запуск: Скрипт обработки пользователей v2.0 ---
+
+# Анализ пользователей:
+# ✅  Здравствуйте, Alice! Ваш статус: premium.
+#    Пользователь Bob имеет базовый доступ.
+# ✅  Здравствуйте, Charlie! Ваш статус: admin.
+# ✅  Здравствуйте, Diana! Ваш статус: premium.
+
+# Список важных пользователей: ['Alice', 'Charlie', 'Diana']
+
+# Получение внешних данных...
+# ✅ Данные с API успешно получены!
+# Полученный заголовок из API: 'delectus aut autem'
+
+# --- Анализ завершен ---
+# (venv) aaaaa@aaaaa-GF63-Thin-9SCXR:~/AI-TUTORIALS/python-trainings$
