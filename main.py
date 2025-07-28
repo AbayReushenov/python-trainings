@@ -1,51 +1,25 @@
 # main.py
 
-from fastapi import FastAPI, HTTPException
+# 1. Импортируем класс FastAPI. Аналог: import express from 'express';
+from fastapi import FastAPI
 
+# 2. Создаем экземпляр приложения. Аналог: const app = express();
 app = FastAPI(
-    title="User Management API",
-    description="An API to manage users, built with FastAPI.",
-    version="1.0.0",
+    title="My First API",
+    description="This is a demo API for learning FastAPI, created by a Node.js developer!",
+    version="0.1.0",
 )
 
-# --- База данных (в виде простого списка словарей) ---
-# В реальном проекте это будет идти из PostgreSQL, MongoDB и т.д.
-DB_USERS = [
-    {"id": 1, "name": "Alice", "role": "premium"},
-    {"id": 2, "name": "Bob", "role": "free"},
-    {"id": 3, "name": "Charlie", "role": "admin"},
-    {"id": 4, "name": "Diana", "role": "premium"},
-]
-
-# --- Эндпоинты ---
-
+# 3. Создаем маршрут (route) для корневого URL.
+# Декоратор `@app.get("/")` связывает URL и HTTP-метод GET с функцией ниже.
+# Это прямой аналог app.get('/', (req, res) => { ... });
 @app.get("/")
 def read_root():
-    """Корневой эндпоинт с приветствием."""
-    return {"message": "Welcome to the User Management API!"}
-
-
-@app.get("/users")
-def get_all_users():
-    """Возвращает список всех пользователей в системе."""
-    return {"users": DB_USERS}
-
-
-@app.get("/users/{user_id}")
-def get_user_by_id(user_id: int):
     """
-    Находит и возвращает одного пользователя по его ID.
-    Если пользователь не найден, возвращает ошибку 404.
+    Этот эндпоинт возвращает приветственное сообщение.
+    Вся документация из docstring будет видна в /docs!
     """
-    # Используем 'list comprehension' из Дня 1, но можно и простой цикл
-    found_user = next((user for user in DB_USERS if user["id"] == user_id), None)
-
-    if not found_user:
-        # Аналог: return res.status(404).json({ message: "User not found" });
-        raise HTTPException(
-            status_code=404,
-            detail=f"User with ID {user_id} not found"
-        )
-
-    return {"user": found_user}
+    # 4. FastAPI автоматически конвертирует словарь Python в JSON-ответ.
+    # Аналог: res.json({ "message": "Hello from your first FastAPI server!" });
+    return {"message": "Hello from your first FastAPI server!"}
 
