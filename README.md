@@ -32,7 +32,11 @@ touch .gitignore
  git push -u origin main
  ```
 
-
+6. Запустите сервер
+```
+uvicorn main:app --reload
+```
+Откройте http://127.0.0.1:8000/
 
 
 # Не учить Python с нуля, а провести параллели с вашим богатым опытом в JavaScript. Это самый быстрый путь к продуктивности.
