@@ -6,6 +6,8 @@ from pydantic import BaseModel
 # Импортируем наш новый сервис
 from services import UserService
 
+from data_analyzer import analyze_user_data
+
 app = FastAPI(
     title="User Management API v2.0 (with Service Layer)",
     version="2.0.0",
@@ -52,3 +54,16 @@ def update_user(user_id: int, user_data: CreateUserRequest):
 @app.delete("/users/{user_id}")
 def delete_user(user_id: int):
     return user_service.delete_user(user_id)
+
+@app.get("/analytics/users-from-csv")
+def get_users_from_csv():
+    """
+    Читает данные пользователей из CSV-файла и возвращает их в виде JSON.
+    """
+    # В реальном приложении путь к файлу лучше вынести в конфигурацию
+    filepath = "users_data.csv"
+    data = analyze_user_data(filepath)
+    if data is None:
+        raise HTTPException(status_code=500, detail="Could not analyze data file.")
+
+    return {"source": "csv", "data": data}
